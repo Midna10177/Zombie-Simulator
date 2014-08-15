@@ -1,0 +1,91 @@
+<script src="https://raw.github.com/processing-js/processing-js/v1.4.8/processing.js"></script>
+<script type="text/processing" data-processing-target="mycanvas">
+void setup()
+{
+  size(600,600);
+  background(255);
+  fill(255);
+  noLoop();
+  PFont fontA = loadFont("courier");
+  textFont(fontA, 14);  
+}
+
+void draw(){  
+//-----------------------------------------------------------------------------
+	var peoplePerLine=70;
+	var zombieColor=color(255, 0, 0);
+	var civilColor=color(0, 212, 25);
+	var initInfectedChance=500; //1 in $var$ will become infeceted
+	stroke(255, 255, 255);
+//------------------------------------------------------------------------------
+	/*
+	---do not touch anything from below this line---
+	
+	DATA IDS: 1 - Zombie
+	          2 - Civilian
+	
+	*/
+	var people=[];
+	var peopleCount=0;
+	var zombieCount=0;
+	var civilCount=0;
+	var peopleSize=width/peoplePerLine;
+	
+	var initpeople = function () {
+	    for(var i=peopleSize/2;i<height;i+=peopleSize){
+	        
+	        for(var j=peopleSize/2;j<width;j+=peopleSize){
+	            if(round(random(1,initInfectedChance+1))===2){
+	                people[peopleCount]=1; // set to zombie
+	                zombieCount++;
+	                fill(zombieColor);
+	            }else {
+	                people[peopleCount]=0; // else set to civil
+	                civilCount++;
+	                fill(civilColor);
+	            }
+	            ellipse(j, i, peopleSize, peopleSize);
+	            peopleCount++;
+	            
+	        }
+	    }
+	};
+	
+	var peopleStep = function() {
+	    if(peopleCount===0){println("ERROR: you must first initialize the game");return 0;}
+	    for(var i=0;i<peopleCount;i++){
+	        if(people[i]===1){ //if zombie
+	            var randNum=round(random(1,4));
+	            if(randNum===1){
+	                //attempt to infect left (i-1)
+					println(i + " infected left " + (i-1));
+	            }else if (randNum===2){
+	                //attempt to infect right (i+1)
+					println(i + " infected right " + (i+1));
+	            }else if (randNum===3){
+	                //attempt to infect above (i-peoplePerLine)
+					println(i + " infected up " + (i-peoplePerLine));
+	            }else if (randNum===4){
+	                //attempt to infect below (i+peoplePerLine)
+					println(i + " infected down " + (i+peoplePerLine));
+	            }
+	        }
+	    }
+	};
+	
+	var scanPeopleType = function (){
+	    for(var i=0;i<peopleCount;i++){
+	        println(i+1+" is "+people[i]);
+	    }
+	};
+	initpeople();
+	println("peoplePerLine is "+peoplePerLine);
+	println("there are "+peopleCount+" people.");
+	println(zombieCount+" of those people are zombies.");
+	println("----------------------------------------------");
+	
+	peopleStep();
+	//scanPeopleType();
+}
+</script>
+<canvas id="mycanvas"></canvas>
